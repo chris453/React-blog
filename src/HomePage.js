@@ -8,23 +8,27 @@ import { relative } from 'path';
 import { Container } from 'reactstrap';
 import style from './style.css';
 import FormDialog from './AlertLogin';
+import AppBar from './AppBar';
+
 const date = new Date();
 
 const MyComp = () => {
     const [dialogVisible, setDialogVisible] = React.useState(false);
 
     return (
+
         <div>
+
             {dialogVisible && <FormDialog />}
             <Button
                 onClick={() => setDialogVisible(true)}
             >
-                </Button>
+            </Button>
         </div>
     );
 }
 export default class loginPage extends Component {
- 
+
     constructor(props) {
         super(props)
 
@@ -32,17 +36,19 @@ export default class loginPage extends Component {
     }
 
 
-   
+
 
     render() {
         return (
-           
+
             <div className="container">
+                <AppBar />
+
                 <Button color='secondary'>
-                    {date}
-                    </Button>
+
+                </Button>
                 <form>
-                    Login 
+                    Login
 
                     First name:<br />
                     <input type="text" name="Username" /><br />
@@ -51,7 +57,7 @@ export default class loginPage extends Component {
                     <button type="submit" name="Login" >submit</button>
                 </form>
             </div>
-           
+
         );
     }
 }

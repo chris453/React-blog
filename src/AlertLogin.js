@@ -13,6 +13,8 @@ import InputAdorment from '@material-ui/core/InputAdornment'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Lock from '@material-ui/icons/Lock'
 import { database } from 'firebase';
+import HomePage from './HomePage'
+import { Redirect } from 'react-router-dom'
 
 export default class FormDialog extends React.Component {
     state = {
@@ -21,11 +23,36 @@ export default class FormDialog extends React.Component {
         password: '',
         listOfUsernames: {},
         listOfPasswords: {},
-        listOfNames: {}
+        listOfNames: {},
+        errorUsername: false,
+        errorPassword: false,
+        errorUsernameMessage: "Username",
+        errorPasswordMessage: "Password",
+        redirect: false,
+        isLogin: false,
+        loggedin: 'Login'
+        
     };
 
-  handleClickOpen = () => {
-    this.setState({ open: true });
+    setRedirect = () => {
+        this.setState({
+            redirect: true
+        })
+    }
+
+    renderRedirect = () => {
+        if (this.state.redirect) {
+            return <Redirect to='/HomePage' />
+        }
+    }
+
+    
+    handleClickOpen = () => {
+        if (this.state.loggedin === 'Logout') {
+            this.logOut();
+        } else {
+            this.setState({ open: true });
+        }
   };
 
   handleClose = () => {
@@ -60,40 +87,85 @@ export default class FormDialog extends React.Component {
             });
 
 
-            return console.log(this.state.listOfUsernames, this.state.listOfPasswords, this.state.listOfNames)
+            //return console.log(this.state.listOfUsernames, this.state.listOfPasswords, this.state.listOfNames)
 
 
         }
 
         );
     }
+   
+    logOut = () => {
+        if (this.state.isLogin) {
+            this.setState({ loggedin: "Login", isLogin: false })
+            this.handleClose();
 
-    validateCredentials = (username,password) => {
-        let result = false;
-        let tempListOfUsername = this.state.listOfUsernames
-        let tempListOfPassword = this.state.listOfPasswords
-        let tempListOfName = this.state.listOfNames
-        let nameKey;
-
-        for (let i = 0; i < tempListOfUsername.length; i++) {
-            if (username === tempListOfUsername[i]) {
-                console.log(tempListOfUsername[i] + tempListOfPassword[i])
-
-                if (password === tempListOfPassword[i]) {
-                    result = true;
-                    nameKey = i;
-                    break;
-                }
-
-
-            }
         }
-        if (result) {
-            alert("Welcome " + tempListOfName[nameKey])
-
     }
+    validateCredentials = (username, password) => {
         
-    } // chris453@hotmail.com
+            let result = false;
+            let tempListOfUsername = this.state.listOfUsernames
+            let tempListOfPassword = this.state.listOfPasswords
+            let tempListOfName = this.state.listOfNames
+            let nameKey;
+            let usernameError = false;
+            let passwordError = false;
+            for (let i = 0; i < tempListOfUsername.length && !result; i++) {
+                if (username === tempListOfUsername[i]) {
+                    usernameError = false;
+                    console.log(usernameError)
+
+                    if (password === tempListOfPassword[i]) {
+                        passwordError = false;
+                        result = true;
+                        nameKey = i;
+                        break;
+
+                    } else {
+                        passwordError = true;
+                        break;
+                    }
+
+
+                } else {
+                    usernameError = true;
+                }
+            }
+            if (result) {
+                usernameError = false;
+                passwordError = false;
+                this.setState({
+                    errorUsername: usernameError, errorPassword: passwordError,
+                    errorUsernameMessage: "Username",
+                    errorPasswordMessage: "Password"
+                });
+
+                alert("Welcome " + tempListOfName[nameKey])
+                this.setState({ isLogin: true, loggedin: "Logout" });
+                //this.setRedirect();
+                this.handleClose();
+
+                return <HomePage />
+
+
+            } else {
+
+                this.setState({ errorUsername: usernameError, errorPassword: passwordError });
+                if (usernameError) {
+                    this.setState({ errorUsernameMessage: "Invalid Username" })
+                } else this.setState({ errorUsernameMessage: "Username" })
+
+                if (passwordError) {
+                    this.setState({ errorPasswordMessage: "Invalid Password" })
+                } else this.setState({ errorPasswordMessage: "Password" })
+
+
+                console.log(this.state.errorPassword + this.state.errorUsername)
+            } // chris453@hotmail.com
+
+        
+    }
 
     componentDidMount() {
         { this.readUserData() }
@@ -101,10 +173,12 @@ export default class FormDialog extends React.Component {
 
     render() {
 
-    return (
+        return (
+       
         <div>
-            <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
-                Login
+
+                <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
+                    {this.state.loggedin}
         </Button>
         <Dialog
           open={this.state.open}
@@ -117,11 +191,12 @@ export default class FormDialog extends React.Component {
             <TextField
               autoFocus
               margin="dense"
-              id="username"
-              label="Email Address"
+                        id="username"
+                        label={this.state.errorUsernameMessage}
               
 
                         type="email"
+                        error={this.state.errorUsername}
                         InputProps={{
                             startAdornment: (
                                 <InputAdorment position="start">
@@ -138,7 +213,8 @@ export default class FormDialog extends React.Component {
               
                         margin="dense"
                         id="password"
-                        label="Password"
+                        label={this.state.errorPasswordMessage}
+                        error={this.state.errorPassword  }
                         type="password"
                         InputProps={{
                             startAdornment: (
@@ -162,6 +238,8 @@ export default class FormDialog extends React.Component {
                     <Button onClick={() =>this.validateCredentials(this.state.username, this.state.password)} color="primary">
               Confirm
             </Button>
+                    {this.renderRedirect()}
+
           </DialogActions>
             </Dialog>
             { this.state.username + this.state.password }
