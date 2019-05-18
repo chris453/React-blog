@@ -30,7 +30,8 @@ export default class FormDialog extends React.Component {
         errorPasswordMessage: "Password",
         redirect: false,
         isLogin: false,
-        loggedin: 'Login'
+        loggedin: 'Login',
+        welcomeMessage: ''
         
     };
 
@@ -46,10 +47,11 @@ export default class FormDialog extends React.Component {
         }
     }
 
-    
+   // handler for if it should send you to login component or login out  
     handleClickOpen = () => {
         if (this.state.loggedin === 'Logout') {
             this.logOut();
+            this.setState({ welcomeMessage: '' });
         } else {
             this.setState({ open: true });
         }
@@ -142,7 +144,8 @@ export default class FormDialog extends React.Component {
                 });
 
                 alert("Welcome " + tempListOfName[nameKey])
-                this.setState({ isLogin: true, loggedin: "Logout" });
+
+                this.setState({ isLogin: true, loggedin: "Logout", welcomeMessage: "Welcome " + tempListOfName[nameKey] + ' ' });
                 //this.setRedirect();
                 this.handleClose();
 
@@ -175,8 +178,8 @@ export default class FormDialog extends React.Component {
 
         return (
        
-        <div>
-
+            <div>
+                {this.state.welcomeMessage}
                 <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
                     {this.state.loggedin}
         </Button>
