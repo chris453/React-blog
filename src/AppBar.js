@@ -10,7 +10,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { Link } from 'react-router-dom';
 import FormDialog from './AlertLogin';
 import HomePage from './HomePage';
-
+import AvatarIcon from './AvatarIcon';
 
 
 const styles = {
@@ -40,6 +40,7 @@ function ButtonAppBar(props) {
                     <Typography variant="h6" color="inherit" className={classes.grow}>
                         Learning React
           </Typography>
+                    <AvatarIcon/>
                     <FormDialog />
 
 

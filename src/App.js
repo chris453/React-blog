@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom';
 
 import AppBar from './AppBar';
-
+import styles from './Styles/styles.css';
 
 function App() {
   return (

@@ -15,8 +15,10 @@ import Lock from '@material-ui/icons/Lock'
 import { database } from 'firebase';
 import HomePage from './HomePage'
 import { Redirect } from 'react-router-dom'
+import { getAvatar, getUserNameNumber } from './Action/index';
 
-export default class FormDialog extends React.Component {
+import { connect } from 'react-redux';
+ class AlertLogin extends React.Component {
     state = {
         open: false,
         username: '',
@@ -24,6 +26,7 @@ export default class FormDialog extends React.Component {
         listOfUsernames: {},
         listOfPasswords: {},
         listOfNames: {},
+        listOfAvatars: {},
         errorUsername: false,
         errorPassword: false,
         errorUsernameMessage: "Username",
@@ -71,7 +74,7 @@ export default class FormDialog extends React.Component {
         var usernameValue = [];
         var passwordTempList = [];
         var nameTempList = [];
-
+        var avatarTempList = [];
         Connect.database().ref('UserAccounts').once('value',  (snapshot)=> {
             snapshot.forEach(item => {
                 var tempUsername =  item.val().Username ;
@@ -86,10 +89,14 @@ export default class FormDialog extends React.Component {
                 nameTempList.push(name)
                 this.setState({ listOfNames: nameTempList })
 
+                var avatar = item.val().Avatar;
+                avatarTempList.push(avatar)
+                this.setState({ listOfAvatars: avatarTempList })
+
             });
 
 
-            //return console.log(this.state.listOfUsernames, this.state.listOfPasswords, this.state.listOfNames)
+            return //console.log(this.state.listOfAvatars);
 
 
         }
@@ -110,13 +117,14 @@ export default class FormDialog extends React.Component {
             let tempListOfUsername = this.state.listOfUsernames
             let tempListOfPassword = this.state.listOfPasswords
             let tempListOfName = this.state.listOfNames
+            let tempListOfAvatar = this.state.listOfAvatars
             let nameKey;
             let usernameError = false;
             let passwordError = false;
             for (let i = 0; i < tempListOfUsername.length && !result; i++) {
                 if (username === tempListOfUsername[i]) {
                     usernameError = false;
-                    console.log(usernameError)
+                  //  console.log(usernameError)
 
                     if (password === tempListOfPassword[i]) {
                         passwordError = false;
@@ -144,9 +152,11 @@ export default class FormDialog extends React.Component {
                 });
 
                 alert("Welcome " + tempListOfName[nameKey])
+                this.props.getAvatar(tempListOfAvatar[nameKey]);
+                this.props.getUserNameNumber(nameKey);
+                this.setState({  isLogin: true, loggedin: "Logout", welcomeMessage: "Welcome " + tempListOfName[nameKey] + ' ' });
 
-                this.setState({ isLogin: true, loggedin: "Logout", welcomeMessage: "Welcome " + tempListOfName[nameKey] + ' ' });
-                //this.setRedirect();
+                this.setRedirect();
                 this.handleClose();
 
                 return <HomePage />
@@ -164,7 +174,7 @@ export default class FormDialog extends React.Component {
                 } else this.setState({ errorPasswordMessage: "Password" })
 
 
-                console.log(this.state.errorPassword + this.state.errorUsername)
+              //  console.log(this.state.errorPassword + this.state.errorUsername)
             } // chris453@hotmail.com
 
         
@@ -250,3 +260,12 @@ export default class FormDialog extends React.Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+    return {
+        avatar: state.avatar,
+        usernamenumber: state.usernamenumber
+    }
+}
+
+export default connect(mapStateToProps, { getAvatar, getUserNameNumber })(AlertLogin);
