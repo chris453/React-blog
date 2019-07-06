@@ -14,6 +14,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import Lock from '@material-ui/icons/Lock'
 import { database } from 'firebase';
 import HomePage from './HomePage'
+
 import { Redirect } from 'react-router-dom'
 import { getAvatar, getUserNameNumber } from './Action/index';
 
@@ -31,30 +32,49 @@ import { connect } from 'react-redux';
         errorPassword: false,
         errorUsernameMessage: "Username",
         errorPasswordMessage: "Password",
+
         redirect: false,
         isLogin: false,
         loggedin: 'Login',
-        welcomeMessage: ''
-        
+        welcomeMessage: '',
+        redirectHome: false
     };
 
     setRedirect = () => {
         this.setState({
             redirect: true
         })
-    }
+     }
+
+     setRedirectHome = () => {
+         this.setState({
+             redirectHome: true
+         })
+     }
 
     renderRedirect = () => {
         if (this.state.redirect) {
-            return <Redirect to='/HomePage' />
+            if (this.state.redirectHome) {
+               
+                return <Redirect to='/' />
+            }
+            else {
+
+                return <Redirect to='/homepage' />
+            }
+        }
+        if (this.state.redirectHome) {
+            alert(this.state.redirectHome + "hey");
+
+            //alert("hey");
         }
     }
 
    // handler for if it should send you to login component or login out  
-    handleClickOpen = () => {
-        if (this.state.loggedin === 'Logout') {
+     handleClickOpen = () => {
+         if (this.state.isLogin) {
             this.logOut();
-            this.setState({ welcomeMessage: '' });
+             this.setState({ isLogin: false, loggedin: "Login", welcomeMessage: '' });
         } else {
             this.setState({ open: true });
         }
@@ -105,11 +125,14 @@ import { connect } from 'react-redux';
     }
    
     logOut = () => {
-        if (this.state.isLogin) {
-            this.setState({ loggedin: "Login", isLogin: false })
-            this.handleClose();
+         //   this.setRedirect();
+           // this.setRedirectHome();
 
-        }
+            this.handleClose();
+            
+
+
+        
     }
     validateCredentials = (username, password) => {
         
@@ -155,11 +178,10 @@ import { connect } from 'react-redux';
                 this.props.getAvatar(tempListOfAvatar[nameKey]);
                 this.props.getUserNameNumber(nameKey);
                 this.setState({  isLogin: true, loggedin: "Logout", welcomeMessage: "Welcome " + tempListOfName[nameKey] + ' ' });
-
-                this.setRedirect();
+                
+               // this.setRedirect();
                 this.handleClose();
 
-                return <HomePage />
 
 
             } else {
@@ -178,16 +200,22 @@ import { connect } from 'react-redux';
             } // chris453@hotmail.com
 
         
-    }
+     }
+
+     
 
     componentDidMount() {
-        { this.readUserData() }
-    }
+        {
+            console.log("hi");
+            this.readUserData()
+        }
+     }
+
+     component
 
     render() {
 
         return (
-       
             <div>
                 {this.state.welcomeMessage}
                 <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
@@ -255,7 +283,7 @@ import { connect } from 'react-redux';
 
           </DialogActions>
             </Dialog>
-            { this.state.username + this.state.password }
+                {this.state.username + this.state.password}
       </div>
     );
   }

@@ -6,8 +6,6 @@ import { TextField } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { relative } from 'path';
 import { Container } from 'reactstrap';
-import FormDialog from './AlertLogin';
-import AppBar from './AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
@@ -16,6 +14,8 @@ import Clear from '@material-ui/icons/Clear';
 import Connect from './Config/Database'
 
 const date = new Date();
+
+
 
 const MyComp = () => {
     const [dialogVisible, setDialogVisible] = React.useState(false);
@@ -38,6 +38,7 @@ class HomePage extends React.Component {
             post: '',
             username: '',
             listOfEntries: '',
+            hey: true
         };
     }
     handleOnChange(e) {
@@ -45,6 +46,8 @@ class HomePage extends React.Component {
 
     }
 
+    clear() {
+    }
 
     handleOnClick() {
 
@@ -63,13 +66,20 @@ class HomePage extends React.Component {
             icon: this.props.avatar
         }
         ref.push(entry);
+        console.log(1);
 
 
     }
     componentDidUpdate() {
-        { this.readUserData() }
+        this.readUserData()
     }
+
+  //  componentDidMount() {
+    //    this.readUserData() 
+   // }
     readUserData = () => {
+        console.log(0);
+
         let array = {}
         var entriesTempList = [];
         Connect.database().ref('Entries/' + this.props.usernamenumber).once('value', (snapshot) => {
@@ -81,19 +91,24 @@ class HomePage extends React.Component {
 
             });
 
+            entriesTempList.reverse();
             this.setState({ listOfEntries: entriesTempList })
 
-            return 
-
+    
         }
 
         );
     }
 
     render() {
-        console.log(this.props.usernamenumber);
+     //   console.log(this.props.usernamenumber);
+
         return (
+
             <div className="container">
+                {this.props.avatar !== '' ? 
+
+                    <div>
                 <br />
                 <br />
                 <br />
@@ -149,22 +164,36 @@ class HomePage extends React.Component {
                 <br />
                 <br />
                 <br />
-                    <br />
-                    {Object.values(this.state.listOfEntries).map (post => {
-                        return (<div>
-                        <h1>{post.title} </h1>
-                        <h3>{post.date}</h3>
-                        <p>{post.post}</p>
-                    </div>
-                    );
-                    })}
+                        <br />
 
                     </Grid>
 
                 </Grid>
-                <AppBar />
+
+                   
+                    
+                   
+
+                    
+                    {Object.values(this.state.listOfEntries).map (post => {
+                        return (<div>
+
+                            <Avatar alt="lanlan icon"
+                                    src={post.icon}
+                          className="avatar_post_style_icon" />
+
+                        <h1>{post.title} </h1>
+                            <small>{post.date}</small>
+                            
+                        <p>{post.post}</p>
+                    </div>
+                    );
+                                    })}
 
 
+</div>
+              
+                : '' }
                
             </div>
 

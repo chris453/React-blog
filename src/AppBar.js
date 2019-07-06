@@ -30,7 +30,6 @@ function ButtonAppBar(props) {
     const { classes } = props;
 
     return (
-
         <div className={classes.root}>
             <AppBar position="fixed">
                 <Toolbar>
@@ -40,13 +39,14 @@ function ButtonAppBar(props) {
                     <Typography variant="h6" color="inherit" className={classes.grow}>
                         Learning React
           </Typography>
-                    <AvatarIcon/>
-                    <FormDialog />
+                    <AvatarIcon />
+                    <FormDialog/>
 
 
 
                 </Toolbar>
             </AppBar>
+            <HomePage/>
         </div>
     );
 }

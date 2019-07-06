@@ -2,6 +2,10 @@
     margin-right: 10px;
 }
 
-.avatar_post_style{
+.avatar_post_style {
     margin-top: 23px;
+}
+
+.avatar_post_style_icon {
+    float: left;
 }

@@ -24,7 +24,7 @@ export default class FormDialog extends React.Component {
         return (
             <div>
                 <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>
-                    Open form dialog
+                    Create New Account
         </Button>
                 <Dialog
                     open={this.state.open}
