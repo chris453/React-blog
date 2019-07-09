@@ -13,13 +13,12 @@ const store = createStore(reducers)
 
 ReactDOM.render(
     <Provider store={store}>
-    <BrowserRouter>
+        <BrowserRouter>
             <div>
 
                 <Route exact path="/" component={App} />
-                <Route path="/Test" component={Test}/>
-            <Route path="/HomePage" component={HomePage} />
-
+                <Route path="/Test" component={Test} />
+                <Route path="/HomePage" component={HomePage} />
 
             </div>
 

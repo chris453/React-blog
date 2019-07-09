@@ -7,19 +7,18 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Link } from 'react-router-dom';
-import ForgetPassword from './ForgetPassword'
+import CreateUser from './CreateUser'
 import Connect from './Config/Database'
 import InputAdorment from '@material-ui/core/InputAdornment'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Lock from '@material-ui/icons/Lock'
 import { database } from 'firebase';
 import HomePage from './HomePage'
-
 import { Redirect } from 'react-router-dom'
 import { getAvatar, getUserNameNumber } from './Action/index';
-
 import { connect } from 'react-redux';
- class AlertLogin extends React.Component {
+
+class AlertLogin extends React.Component {
     state = {
         open: false,
         username: '',
@@ -44,18 +43,18 @@ import { connect } from 'react-redux';
         this.setState({
             redirect: true
         })
-     }
+    }
 
-     setRedirectHome = () => {
-         this.setState({
-             redirectHome: true
-         })
-     }
+    setRedirectHome = () => {
+        this.setState({
+            redirectHome: true
+        })
+    }
 
     renderRedirect = () => {
         if (this.state.redirect) {
             if (this.state.redirectHome) {
-               
+
                 return <Redirect to='/' />
             }
             else {
@@ -70,23 +69,23 @@ import { connect } from 'react-redux';
         }
     }
 
-   // handler for if it should send you to login component or login out  
-     handleClickOpen = () => {
-         if (this.state.isLogin) {
+    // handler for if it should send you to login component or login out  
+    handleClickOpen = () => {
+        if (this.state.isLogin) {
             this.logOut();
-             this.setState({ isLogin: false, loggedin: "Login", welcomeMessage: '' });
+            this.setState({ isLogin: false, loggedin: "Login", welcomeMessage: '' });
         } else {
             this.setState({ open: true });
         }
-  };
+    };
 
-  handleClose = () => {
-    this.setState({ open: false });
+    handleClose = () => {
+        this.setState({ open: false });
     };
 
     handleOnChange(e) {
-        this.setState( { [e.target.id]: e.target.value })
-    
+        this.setState({ [e.target.id]: e.target.value })
+
     }
 
     readUserData = () => {
@@ -95,9 +94,9 @@ import { connect } from 'react-redux';
         var passwordTempList = [];
         var nameTempList = [];
         var avatarTempList = [];
-        Connect.database().ref('UserAccounts').once('value',  (snapshot)=> {
+        Connect.database().ref('UserAccounts').once('value', (snapshot) => {
             snapshot.forEach(item => {
-                var tempUsername =  item.val().Username ;
+                var tempUsername = item.val().Username;
                 usernameValue.push(tempUsername)
                 this.setState({ listOfUsernames: usernameValue })
 
@@ -123,95 +122,95 @@ import { connect } from 'react-redux';
 
         );
     }
-   
+
     logOut = () => {
-         //   this.setRedirect();
-           // this.setRedirectHome();
+        //   this.setRedirect();
+        // this.setRedirectHome();
+        this.props.getAvatar("");
 
-            this.handleClose();
-            
+        this.handleClose();
 
 
-        
+
+
     }
     validateCredentials = (username, password) => {
-        
-            let result = false;
-            let tempListOfUsername = this.state.listOfUsernames
-            let tempListOfPassword = this.state.listOfPasswords
-            let tempListOfName = this.state.listOfNames
-            let tempListOfAvatar = this.state.listOfAvatars
-            let nameKey;
-            let usernameError = false;
-            let passwordError = false;
-            for (let i = 0; i < tempListOfUsername.length && !result; i++) {
-                if (username === tempListOfUsername[i]) {
-                    usernameError = false;
-                  //  console.log(usernameError)
 
-                    if (password === tempListOfPassword[i]) {
-                        passwordError = false;
-                        result = true;
-                        nameKey = i;
-                        break;
+        let result = false;
+        let tempListOfUsername = this.state.listOfUsernames
+        let tempListOfPassword = this.state.listOfPasswords
+        let tempListOfName = this.state.listOfNames
+        let tempListOfAvatar = this.state.listOfAvatars
+        let nameKey;
+        let usernameError = false;
+        let passwordError = false;
+        for (let i = 0; i < tempListOfUsername.length && !result; i++) {
+            if (username === tempListOfUsername[i]) {
+                usernameError = false;
+                //  console.log(usernameError)
 
-                    } else {
-                        passwordError = true;
-                        break;
-                    }
-
+                if (password === tempListOfPassword[i]) {
+                    passwordError = false;
+                    result = true;
+                    nameKey = i;
+                    break;
 
                 } else {
-                    usernameError = true;
+                    passwordError = true;
+                    break;
                 }
-            }
-            if (result) {
-                usernameError = false;
-                passwordError = false;
-                this.setState({
-                    errorUsername: usernameError, errorPassword: passwordError,
-                    errorUsernameMessage: "Username",
-                    errorPasswordMessage: "Password"
-                });
-
-                alert("Welcome " + tempListOfName[nameKey])
-                this.props.getAvatar(tempListOfAvatar[nameKey]);
-                this.props.getUserNameNumber(nameKey);
-                this.setState({  isLogin: true, loggedin: "Logout", welcomeMessage: "Welcome " + tempListOfName[nameKey] + ' ' });
-                
-               // this.setRedirect();
-                this.handleClose();
-
 
 
             } else {
+                usernameError = true;
+            }
+        }
+        if (result) {
+            usernameError = false;
+            passwordError = false;
+            this.setState({
+                errorUsername: usernameError, errorPassword: passwordError,
+                errorUsernameMessage: "Username",
+                errorPasswordMessage: "Password"
+            });
 
-                this.setState({ errorUsername: usernameError, errorPassword: passwordError });
-                if (usernameError) {
-                    this.setState({ errorUsernameMessage: "Invalid Username" })
-                } else this.setState({ errorUsernameMessage: "Username" })
+            alert("Welcome " + tempListOfName[nameKey])
+            this.props.getAvatar(tempListOfAvatar[nameKey]);
+            this.props.getUserNameNumber(nameKey);
+            this.setState({ isLogin: true, loggedin: "Logout", username: '', password: '', welcomeMessage: "Welcome " + tempListOfName[nameKey] + ' ' });
 
-                if (passwordError) {
-                    this.setState({ errorPasswordMessage: "Invalid Password" })
-                } else this.setState({ errorPasswordMessage: "Password" })
+            // this.setRedirect();
+            this.handleClose();
 
 
-              //  console.log(this.state.errorPassword + this.state.errorUsername)
-            } // chris453@hotmail.com
 
-        
-     }
+        } else {
 
-     
+            this.setState({ errorUsername: usernameError, errorPassword: passwordError });
+            if (usernameError) {
+                this.setState({ errorUsernameMessage: "Invalid Username" })
+            } else this.setState({ errorUsernameMessage: "Username" })
+
+            if (passwordError) {
+                this.setState({ errorPasswordMessage: "Invalid Password" })
+            } else this.setState({ errorPasswordMessage: "Password" })
+
+
+            //  console.log(this.state.errorPassword + this.state.errorUsername)
+        } // chris453@hotmail.com
+
+
+    }
+
+
 
     componentDidMount() {
         {
-            console.log("hi");
             this.readUserData()
         }
-     }
+    }
 
-     component
+    component
 
     render() {
 
@@ -220,73 +219,73 @@ import { connect } from 'react-redux';
                 {this.state.welcomeMessage}
                 <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
                     {this.state.loggedin}
-        </Button>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">Login</DialogTitle>
-          <DialogContent>
-            
-            <TextField
-              autoFocus
-              margin="dense"
-                        id="username"
-                        label={this.state.errorUsernameMessage}
-              
+                </Button>
+                <Dialog
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                    aria-labelledby="form-dialog-title"
+                >
+                    <DialogTitle id="form-dialog-title">Login</DialogTitle>
+                    <DialogContent>
 
-                        type="email"
-                        error={this.state.errorUsername}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdorment position="start">
-                                    <AccountCircle />
-                                </InputAdorment>
-                            )
-                        }}
-                        onChange={this.handleOnChange.bind(this)}
-
-              fullWidth
-                    />
-                    
                         <TextField
-              
-                        margin="dense"
-                        id="password"
-                        label={this.state.errorPasswordMessage}
-                        error={this.state.errorPassword  }
-                        type="password"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdorment position="start">
-                                    <Lock />
-                                </InputAdorment>
-                            )
-                        }}
-                        onChange={this.handleOnChange.bind(this)}
-                        fullWidth
-                    />
-                    
-          
-                </DialogContent>
-                <ForgetPassword />
-  
-          <DialogActions>
-            <Button onClick={this.handleClose } color="primary">
-              Cancel
-            </Button>
-                    <Button onClick={() =>this.validateCredentials(this.state.username, this.state.password)} color="primary">
-              Confirm
-            </Button>
-                    {this.renderRedirect()}
+                            autoFocus
+                            margin="dense"
+                            id="username"
+                            label={this.state.errorUsernameMessage}
 
-          </DialogActions>
-            </Dialog>
+
+                            type="email"
+                            error={this.state.errorUsername}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdorment position="start">
+                                        <AccountCircle />
+                                    </InputAdorment>
+                                )
+                            }}
+                            onChange={this.handleOnChange.bind(this)}
+
+                            fullWidth
+                        />
+
+                        <TextField
+
+                            margin="dense"
+                            id="password"
+                            label={this.state.errorPasswordMessage}
+                            error={this.state.errorPassword}
+                            type="password"
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdorment position="start">
+                                        <Lock />
+                                    </InputAdorment>
+                                )
+                            }}
+                            onChange={this.handleOnChange.bind(this)}
+                            fullWidth
+                        />
+
+
+                    </DialogContent>
+                    <CreateUser />
+
+                    <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                            Cancel
+            </Button>
+                        <Button onClick={() => this.validateCredentials(this.state.username, this.state.password)} color="primary">
+                            Confirm
+            </Button>
+                        {this.renderRedirect()}
+
+                    </DialogActions>
+                </Dialog>
                 {this.state.username + this.state.password}
-      </div>
-    );
-  }
+            </div>
+        );
+    }
 }
 
 function mapStateToProps(state) {

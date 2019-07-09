@@ -40,13 +40,13 @@ function ButtonAppBar(props) {
                         Learning React
           </Typography>
                     <AvatarIcon />
-                    <FormDialog/>
+                    <FormDialog />
 
 
 
                 </Toolbar>
             </AppBar>
-            <HomePage/>
+            <HomePage />
         </div>
     );
 }

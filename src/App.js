@@ -8,15 +8,15 @@ function App() {
 
 
     return (
-      <div className="App">
-          <header className="Blog">
-                <AppBar/>
+        <div className="App">
+            <header className="Blog">
+                <AppBar />
 
-          </header>
-          
+            </header>
+
         </div>
 
-  );
+    );
 }
 
 export default App;

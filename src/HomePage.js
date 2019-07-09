@@ -38,6 +38,10 @@ class HomePage extends React.Component {
             post: '',
             username: '',
             listOfEntries: '',
+            errorTitle: false,
+            errorPost: false,
+            errorTitleMessage: "Title",
+            errorPostMessage: "Post",
             hey: true
         };
     }
@@ -56,32 +60,56 @@ class HomePage extends React.Component {
         var passwordTempList = [];
         var nameTempList = [];
         var avatarTempList = [];
-        let ref = Connect.database().ref('Entries/' + this.props.usernamenumber)
-        let time = new Date().toLocaleString();
-
-        let entry = {
-            title: this.state.title,
-            post: this.state.post,
-            date: time,
-            icon: this.props.avatar
+        var resultTitle = false;
+        var resultPost = false;
+        if (this.state.title === "") {
+            this.setState({ errorTitle: true, errorTitleMessage: "Invalid Title" })
+            resultTitle = false;
         }
-        ref.push(entry);
-        console.log(1);
+        else {
+            resultTitle = true;
+            this.setState({ errorTitle: false, errorTitleMessage: "Title"})
 
+        }
+        if (this.state.post === "") {
+            resultPost = false;
+            this.setState({ errorPost: true, errorPostMessage: "Invalid Post" })
+
+        } else {
+            resultPost = true;
+            this.setState({  errorPost: false, errorPostMessage: "Post" })
+
+        }
+        if (resultPost && resultTitle) {
+            this.setState({ errorTitle: false, errorTitleMessage: "Title", errorPost: false, errorPostMessage: "Post" })
+
+            let ref = Connect.database().ref('Entries/' + this.props.usernamenumber)
+            let time = new Date().toLocaleString();
+
+            let entry = {
+                title: this.state.title,
+                post: this.state.post,
+                date: time,
+                icon: this.props.avatar
+            }
+            ref.push(entry);
+            console.log(1);
+        }
 
     }
     componentDidUpdate() {
         this.readUserData()
     }
 
-  //  componentDidMount() {
+    //  componentDidMount() {
     //    this.readUserData() 
-   // }
+    // }
     readUserData = () => {
         console.log(0);
 
         let array = {}
-        var entriesTempList = [];
+            var entriesTempList = [];
+       
         Connect.database().ref('Entries/' + this.props.usernamenumber).once('value', (snapshot) => {
             snapshot.forEach(item => {
 
@@ -94,107 +122,112 @@ class HomePage extends React.Component {
             entriesTempList.reverse();
             this.setState({ listOfEntries: entriesTempList })
 
-    
+
         }
 
         );
     }
 
     render() {
-     //   console.log(this.props.usernamenumber);
+        //   console.log(this.props.usernamenumber);
 
         return (
 
             <div className="container">
-                {this.props.avatar !== '' ? 
+                {this.props.avatar !== '' ?
 
                     <div>
-                <br />
-                <br />
-                <br />
-                <br />
-                <Grid container spacing={16} justify="center">
-                    <Avatar alt="lanlan icon"
-                        src={this.props.avatar}
-                        className="avatar_post_style"/>
-                    <Grid item xs={10}>
-
-                
-                <form autoComplete = "off">
-                    <TextField
-                        id="title"
-                        label="title"
-                        style={{ margin: 8 }}
-                        placeholder="Enter Title here"
-                        fullWidth
-                        margin="normal"
-                        variant="outlined"
-                                onChange={this.handleOnChange.bind(this)}
-
-                            />
-
-                            <TextField
-                                id="post"
-                                label="what is on your mind?"
-                                style={{ margin: 8 }}
-                                multiline={true}
-                                rows={10}
-                                onChange={this.handleOnChange.bind(this)}
-
-                                rowsMax={15}
-                                placeholder="Enter thoughts here"
-                                fullWidth
-                                margin="normal"
-                                variant="outlined"
-
-                            />
-
-                            <Button onClick={this.handleClose} color="secondary" variant="contained" size="large">
-                                Cancel <Clear className ="style"/>
-            </Button>
-                            &nbsp;
-                            <Button color="primary" variant="contained" size="large" onClick={() => this.handleOnClick()} >
-                                Post <Send className = "style"/>
-            </Button>
-
-
-                        </form>
-
-               
-                <br />
-                <br />
-                <br />
                         <br />
-
-                    </Grid>
-
-                </Grid>
-
-                   
-                    
-                   
-
-                    
-                    {Object.values(this.state.listOfEntries).map (post => {
-                        return (<div>
-
+                        <br />
+                        <br />
+                        <br />
+                        <Grid container spacing={16} justify="center">
                             <Avatar alt="lanlan icon"
+                                src={this.props.avatar}
+                                className="avatar_post_style" />
+                            <Grid item xs={10}>
+
+
+                                <form autoComplete="off">
+                                    <TextField
+                                        id="title"
+                                        label={this.state.errorTitleMessage}
+                                        error={this.state.errorTitle}
+
+                                        style={{ margin: 8 }}
+                                        placeholder="Enter Title here"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        onChange={this.handleOnChange.bind(this)}
+
+                                    />
+
+                                    <TextField
+                                        id="post"
+                                        label="what is on your mind?"
+                                        style={{ margin: 8 }}
+                                        multiline={true}
+                                        rows={10}
+                                        label={this.state.errorPostMessage}
+                                        error={this.state.errorPost}
+
+                                        onChange={this.handleOnChange.bind(this)}
+
+                                        rowsMax={15}
+                                        placeholder="Enter thoughts here"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+
+                                    />
+
+                                    <Button onClick={this.handleClose} color="secondary" variant="contained" size="large">
+                                        Cancel <Clear className="style" />
+                                    </Button>
+                                    &nbsp;
+                            <Button color="primary" variant="contained" size="large" onClick={() => this.handleOnClick()} >
+                                        Post <Send className="style" />
+                                    </Button>
+
+
+                                </form>
+
+
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+
+                            </Grid>
+
+                        </Grid>
+
+
+
+
+
+
+                        {Object.values(this.state.listOfEntries).map(post => {
+                            return (<div>
+
+                                <Avatar alt="lanlan icon"
                                     src={post.icon}
-                          className="avatar_post_style_icon" />
+                                    className="avatar_post_style_icon" />
 
-                        <h1>{post.title} </h1>
-                            <small>{post.date}</small>
-                            
-                        <p>{post.post}</p>
+                                <h1>{post.title} </h1>
+                                <small>{post.date}</small>
+
+                                <p>{post.post}</p>
+                            </div>
+                            );
+                        })}
+
+
                     </div>
-                    );
-                                    })}
 
+                    : ''}
 
-</div>
-              
-                : '' }
-               
             </div>
 
         );
