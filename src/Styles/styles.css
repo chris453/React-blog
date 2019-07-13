@@ -8,4 +8,20 @@
 
 .avatar_post_style_icon {
     float: left;
+    margin-right: 10px;
+}
+
+.clock_post_style {
+    margin-left: 50px;
+}
+.post_style {
+    
+    margin-left: 50px;
+    margin-bottom: 60px;
+}
+
+.edit_style {
+float:right;
+margin-right: 10px;
+
 }

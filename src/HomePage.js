@@ -1,17 +1,21 @@
 import React, { Component } from 'react'
 import Button from '@material-ui/core/Button';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+
 import { TextField } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { relative } from 'path';
-import { Container } from 'reactstrap';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContentText from '@material-ui/core/DialogContentText';
+
 import Avatar from '@material-ui/core/Avatar';
 import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Send from '@material-ui/icons/Send';
 import Clear from '@material-ui/icons/Clear';
 import Connect from './Config/Database'
+import Delete from '@material-ui/icons/Delete';
+import Edit from '@material-ui/icons/Edit';
 
 const date = new Date();
 
@@ -38,11 +42,17 @@ class HomePage extends React.Component {
             post: '',
             username: '',
             listOfEntries: '',
+            listOfEdit: 0,
+            listOfDelete: 0,
             errorTitle: false,
             errorPost: false,
             errorTitleMessage: "Title",
             errorPostMessage: "Post",
-            hey: true
+            listOfKeys: {},
+            prevAvatar: '',
+            open: false,
+            openEdit: false,
+            buttonPressed:''
         };
     }
     handleOnChange(e) {
@@ -52,6 +62,19 @@ class HomePage extends React.Component {
 
     clear() {
     }
+    handleClickOpen = (e) => {
+        this.setState({ open: true, buttonPressed:e });
+        
+    };
+
+    handleClickOpenEdit = (e) => {
+        this.setState({ openEdit: true, buttonPressed: e });
+
+    };
+
+    handleClose = () => {
+        this.setState({ open: false, openEdit:false });
+    };
 
     handleOnClick() {
 
@@ -93,46 +116,74 @@ class HomePage extends React.Component {
                 icon: this.props.avatar
             }
             ref.push(entry);
-            console.log(1);
+            this.setState({ title: "", post: "" })
+            this.readUserData() 
+
         }
 
     }
     componentDidUpdate() {
-        this.readUserData()
-    }
+        if (this.props.avatar !== this.state.prevAvatar) {
+            this.readUserData()
+            this.setState({ prevAvatar: this.props.avatar })
 
-    //  componentDidMount() {
-    //    this.readUserData() 
-    // }
+        }
+    }
+    
+      componentDidMount() {
+     }
     readUserData = () => {
-        console.log(0);
 
         let array = {}
             var entriesTempList = [];
-       
+        var keyTempList = [];
         Connect.database().ref('Entries/' + this.props.usernamenumber).once('value', (snapshot) => {
+
             snapshot.forEach(item => {
-
-
                 var entries = item.val();
+                keyTempList.push(item.key);
                 entriesTempList.push(entries)
-
             });
-
+            keyTempList.reverse();
             entriesTempList.reverse();
-            this.setState({ listOfEntries: entriesTempList })
-
+            this.setState({ listOfEntries: entriesTempList, listOfKeys: keyTempList })
+            
 
         }
 
         );
     }
+    cancelOnClick = () => {
+        this.setState({ title: "", post: "", errorPost: false, errorTitle: false, errorTitleMessage: "Title", errorPostMessage: "Post"})
 
-    render() {
-        //   console.log(this.props.usernamenumber);
+    }
+    confirm = (id) => {
+        let tempListOfKey = this.state.listOfKeys;
 
+        var tempKey = tempListOfKey[id];
+        Connect.database().ref('Entries/' + this.props.usernamenumber).child(tempKey).remove();
+
+        this.readUserData()
+        this.handleClose()
+    }
+    delete = (id) => {
+        alert(id);
+        this.handleClickOpen();
+        alert(this.state.open);
         return (
+            <div>
+        
+                </div>
+        );
 
+    }
+    render() {
+       // console.log(this.listOfKeys);
+        var temp = this.props.avatar
+        if (this.open) {
+            console.log("true");
+        }
+        return (
             <div className="container">
                 {this.props.avatar !== '' ?
 
@@ -153,7 +204,7 @@ class HomePage extends React.Component {
                                         id="title"
                                         label={this.state.errorTitleMessage}
                                         error={this.state.errorTitle}
-
+                                        value={this.state.title}
                                         style={{ margin: 8 }}
                                         placeholder="Enter Title here"
                                         fullWidth
@@ -165,6 +216,8 @@ class HomePage extends React.Component {
 
                                     <TextField
                                         id="post"
+                                        value={this.state.post}
+
                                         label="what is on your mind?"
                                         style={{ margin: 8 }}
                                         multiline={true}
@@ -182,7 +235,7 @@ class HomePage extends React.Component {
 
                                     />
 
-                                    <Button onClick={this.handleClose} color="secondary" variant="contained" size="large">
+                                    <Button onClick={this.cancelOnClick} color="secondary" variant="contained" size="large" >
                                         Cancel <Clear className="style" />
                                     </Button>
                                     &nbsp;
@@ -199,30 +252,52 @@ class HomePage extends React.Component {
                                 <br />
                                 <br />
 
-                            </Grid>
-
-                        </Grid>
+                           
 
 
 
 
 
+                                {Object.values(this.state.listOfEntries).map((post,index) => {
 
-                        {Object.values(this.state.listOfEntries).map(post => {
+                                    
                             return (<div>
-
-                                <Avatar alt="lanlan icon"
+                                    
+                                <Avatar alt="icon"
                                     src={post.icon}
                                     className="avatar_post_style_icon" />
+                                <Edit className="edit_style" id={index} />
+                                <Delete className="edit_style" id={index} onClick={() => this.handleClickOpen(index)} />
+                                <Dialog
+                                    open={this.state.open}
+                                    onClose={this.handleClose}
+                                    aria-labelledby="form-dialog-title"
+                                >
+                                    <DialogTitle id="form-dialog-title">Are you sure?</DialogTitle>
 
-                                <h1>{post.title} </h1>
-                                <small>{post.date}</small>
+                                    <DialogActions>
+                                        <Button onClick={this.handleClose} color="primary">
+                                            Cancel
+            </Button>
+                                        <Button onClick={() => { this.confirm(this.state.buttonPressed) }} color="primary">
+                                            Confirm
+            </Button>
+                                    </DialogActions>
 
-                                <p>{post.post}</p>
+                                </Dialog>
+                                <h1>{post.title}
+                                </h1>
+                                
+                                <small className="clock_post_style">{post.date}</small>
+
+                                <p className="post_style">{post.post}</p>
                             </div>
                             );
                         })}
 
+                            </Grid>
+
+                        </Grid>
 
                     </div>
 

@@ -42,6 +42,7 @@ export default class FormDialog extends React.Component {
                             margin="dense"
                             id="name"
                             label="Email Address"
+                             
                             type="email"
                             fullWidth
                         />

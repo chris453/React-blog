@@ -17,6 +17,8 @@ import HomePage from './HomePage'
 import { Redirect } from 'react-router-dom'
 import { getAvatar, getUserNameNumber } from './Action/index';
 import { connect } from 'react-redux';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 class AlertLogin extends React.Component {
     state = {
@@ -62,11 +64,7 @@ class AlertLogin extends React.Component {
                 return <Redirect to='/homepage' />
             }
         }
-        if (this.state.redirectHome) {
-            alert(this.state.redirectHome + "hey");
-
-            //alert("hey");
-        }
+       
     }
 
     // handler for if it should send you to login component or login out  
@@ -253,6 +251,7 @@ class AlertLogin extends React.Component {
 
                             margin="dense"
                             id="password"
+                          
                             label={this.state.errorPasswordMessage}
                             error={this.state.errorPassword}
                             type="password"
@@ -261,9 +260,11 @@ class AlertLogin extends React.Component {
                                     <InputAdorment position="start">
                                         <Lock />
                                     </InputAdorment>
+                                    
                                 )
                             }}
                             onChange={this.handleOnChange.bind(this)}
+
                             fullWidth
                         />
 
@@ -282,7 +283,6 @@ class AlertLogin extends React.Component {
 
                     </DialogActions>
                 </Dialog>
-                {this.state.username + this.state.password}
             </div>
         );
     }
