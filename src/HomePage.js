@@ -7,6 +7,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogContent from '@material-ui/core/DialogContent';
 
 import Avatar from '@material-ui/core/Avatar';
 import { connect } from 'react-redux';
@@ -41,18 +42,20 @@ class HomePage extends React.Component {
             title: '',
             post: '',
             username: '',
-            listOfEntries: '',
+            listOfEntries: [],
             listOfEdit: 0,
             listOfDelete: 0,
             errorTitle: false,
             errorPost: false,
             errorTitleMessage: "Title",
             errorPostMessage: "Post",
-            listOfKeys: {},
+            listOfKeys: [],
             prevAvatar: '',
             open: false,
             openEdit: false,
-            buttonPressed:''
+            buttonPressed: '0',
+            editTitle:'',
+            editPost:'',
         };
     }
     handleOnChange(e) {
@@ -68,11 +71,14 @@ class HomePage extends React.Component {
     };
 
     handleClickOpenEdit = (e) => {
-        this.setState({ openEdit: true, buttonPressed: e });
+        this.setState({ openEdit: true, buttonPressed: e, editPost: this.state.listOfEntries[e].post, editTitle: this.state.listOfEntries[e].title });
 
     };
 
     handleClose = () => {
+        this.setState({ errorTitle: false, errorTitleMessage: "Title" })
+        this.setState({ errorPost: false, errorPostMessage: "Post" })
+
         this.setState({ open: false, openEdit:false });
     };
 
@@ -122,6 +128,41 @@ class HomePage extends React.Component {
         }
 
     }
+
+    editPost = () => {
+        var resultTitle = false;
+        var resultPost = false;
+    if (this.state.editTitle === "") {
+        this.setState({ errorTitle: true, errorTitleMessage: "Invalid Title" })
+        resultTitle = false;
+    }
+    else {
+        resultTitle = true;
+        this.setState({ errorTitle: false, errorTitleMessage: "Title" })
+
+    }
+    if (this.state.editPost === "") {
+        resultPost = false;
+        this.setState({ errorPost: true, errorPostMessage: "Invalid Post" })
+
+    } else {
+        resultPost = true;
+        this.setState({ errorPost: false, errorPostMessage: "Post" })
+
+        }
+
+        if (resultPost && resultTitle) {
+            this.setState({ errorTitle: false, errorTitleMessage: "Title", errorPost: false, errorPostMessage: "Post" })
+            var tempKey = this.state.listOfKeys[this.state.buttonPressed];
+
+            Connect.database().ref('Entries/' + this.props.usernamenumber).child(tempKey).update({ post: this.state.editPost, title: this.state.editTitle });
+
+            this.readUserData()
+            this.handleClose()
+        }
+        
+
+}
     componentDidUpdate() {
         if (this.props.avatar !== this.state.prevAvatar) {
             this.readUserData()
@@ -178,6 +219,8 @@ class HomePage extends React.Component {
 
     }
     render() {
+        console.log(this.state.listOfEntries);
+
        // console.log(this.listOfKeys);
         var temp = this.props.avatar
         if (this.open) {
@@ -258,15 +301,15 @@ class HomePage extends React.Component {
 
 
 
-                                {Object.values(this.state.listOfEntries).map((post,index) => {
+                                {Object.values(this.state.listOfEntries).map((post, index) => {
 
                                     
                             return (<div>
-                                    
+                         
                                 <Avatar alt="icon"
                                     src={post.icon}
                                     className="avatar_post_style_icon" />
-                                <Edit className="edit_style" id={index} />
+                                <Edit className="edit_style" id={index} onClick={() => this.handleClickOpenEdit(index)} />
                                 <Delete className="edit_style" id={index} onClick={() => this.handleClickOpen(index)} />
                                 <Dialog
                                     open={this.state.open}
@@ -281,6 +324,59 @@ class HomePage extends React.Component {
             </Button>
                                         <Button onClick={() => { this.confirm(this.state.buttonPressed) }} color="primary">
                                             Confirm
+            </Button>
+                                    </DialogActions>
+
+                                </Dialog>
+
+                                <Dialog
+                                    open={this.state.openEdit}
+                                    onClose={this.handleClose}
+                                    aria-labelledby="form-dialog-title"
+                                >
+                                    <DialogTitle id="form-dialog-title">Edit Post?</DialogTitle>
+                                    <DialogContent>
+
+                                        <TextField
+                                            autoFocus
+                                            margin="dense"
+                                            id="editTitle"
+                                            value={(this.state.editTitle)}
+                                        //    label={(this.state.editTitle)}
+                                            label={this.state.errorTitleMessage}
+                                            error={this.state.errorTitle}
+                                            type="email"
+                                           
+                                        onChange={this.handleOnChange.bind(this)}
+
+                                            fullWidth
+                                        />
+
+                                        <TextField
+
+                                            margin="dense"
+                                            id="editPost"
+
+                                            value={(this.state.editPost)}
+                                        //    label={(this.state.editPost)}
+                                            label={this.state.errorPostMessage}
+
+                                            error={this.state.errorPost}
+                                          //  type="password"
+                                       
+                                            onChange={this.handleOnChange.bind(this)}
+
+                                            fullWidth
+                                        />
+
+
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={this.handleClose} color="primary">
+                                            Cancel
+            </Button>
+                                        <Button onClick={() => { this.editPost() }} color="primary">
+                                            Save
             </Button>
                                     </DialogActions>
 
