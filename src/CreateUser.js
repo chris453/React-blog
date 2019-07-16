@@ -7,6 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Link } from 'react-router-dom';
+import Avatar from '@material-ui/core/Avatar';
 
 export default class FormDialog extends React.Component {
     state = {
@@ -34,39 +35,45 @@ export default class FormDialog extends React.Component {
                 >
                     <DialogTitle id="form-dialog-title">Create New User</DialogTitle>
                     <DialogContent>
-                        
+                        <Avatar alt="icon"
+                            src={"https://firebasestorage.googleapis.com/v0/b/sturdy-plateau-174315.appspot.com/o/default_icon.png?alt=media&token=1e38271f-f758-4d7c-a34e-88d1e4a61689"}
+
+                            />
                         <TextField
-                            autoFocus
+                               autoFocus
+                            margin="dense"
+                            id="first name"
+                            label="first name"
+                            // type="email"
+                            fullWidth
+                        />
+
+                        <TextField
+                            //autoFocus
+                            margin="dense"
+                            id="last name"
+                            label="last name"
+                            //type="email"
+                            fullWidth
+                        />
+                        <TextField
+                         //   autoFocus
                             margin="dense"
                             id="email"
                             label="Email Address"
                             type="email"
                             fullWidth
                         />
+                        
                         <TextField
-                            autoFocus
-                            margin="dense"
-                            id="username"
-                            label="username"
-                            type="text"
-                            fullWidth
-                        />
-                        <TextField
-                            autoFocus
+                        //    autoFocus
                             margin="dense"
                             id="password"
                             label="password"
                             type="password"
                             fullWidth
                         />
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Email Address"
-                            type="email"
-                            fullWidth
-                        />
+                        
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">

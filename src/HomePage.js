@@ -219,13 +219,9 @@ class HomePage extends React.Component {
 
     }
     render() {
-        console.log(this.state.listOfEntries);
 
        // console.log(this.listOfKeys);
-        var temp = this.props.avatar
-        if (this.open) {
-            console.log("true");
-        }
+        
         return (
             <div className="container">
                 {this.props.avatar !== '' ?
