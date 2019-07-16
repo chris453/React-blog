@@ -1,4 +1,4 @@
-﻿To run this program just change to the helloworld directory and open cmd or terminal.
+﻿To run this program just change to the src directory and open cmd or terminal.
 
 run the command npm start to start the program
 
