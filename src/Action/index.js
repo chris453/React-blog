@@ -8,11 +8,22 @@ export function getAvatar(text) {
 }
 
 export function getUserNameNumber(text) {
-        console.log(text);
+    console.log(text);
+   // alert(text);
         return {
             type: "USERNAMENUMBER",
             content: text
 
         }
     
+}
+export function getNameKey(text) {
+    console.log(text);
+  //  alert(text);
+    return {
+        type: "NAMEKEY",
+        content: text
+
+    }
+
 }

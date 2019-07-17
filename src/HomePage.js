@@ -232,7 +232,7 @@ class HomePage extends React.Component {
                         <br />
                         <br />
                         <Grid container spacing={16} justify="center">
-                            <Avatar alt="lanlan icon"
+                            <Avatar alt="icon"
                                 src={this.props.avatar}
                                 className="avatar_post_style" />
                             <Grid item xs={10}>
@@ -308,12 +308,19 @@ class HomePage extends React.Component {
                                 <Edit className="edit_style" id={index} onClick={() => this.handleClickOpenEdit(index)} />
                                 <Delete className="edit_style" id={index} onClick={() => this.handleClickOpen(index)} />
                                 <Dialog
+                                    maxWidth="xl"
+
                                     open={this.state.open}
                                     onClose={this.handleClose}
+                                    fullWidth={true}
                                     aria-labelledby="form-dialog-title"
                                 >
-                                    <DialogTitle id="form-dialog-title">Are you sure?</DialogTitle>
+                                    <DialogTitle id="form-dialog-title">Are you sure you want to delete this post?</DialogTitle>
+                                    <DialogContent>
+                                        <p> {this.state.listOfEntries[this.state.buttonPressed].title}</p>
+                                        <p> {this.state.listOfEntries[this.state.buttonPressed].post}</p>
 
+                                    </DialogContent>
                                     <DialogActions>
                                         <Button onClick={this.handleClose} color="primary">
                                             Cancel
@@ -325,58 +332,6 @@ class HomePage extends React.Component {
 
                                 </Dialog>
 
-                                <Dialog
-                                    open={this.state.openEdit}
-                                    onClose={this.handleClose}
-                                    aria-labelledby="form-dialog-title"
-                                >
-                                    <DialogTitle id="form-dialog-title">Edit Post?</DialogTitle>
-                                    <DialogContent>
-
-                                        <TextField
-                                            autoFocus
-                                            margin="dense"
-                                            id="editTitle"
-                                            value={(this.state.editTitle)}
-                                        //    label={(this.state.editTitle)}
-                                            label={this.state.errorTitleMessage}
-                                            error={this.state.errorTitle}
-                                            type="email"
-                                           
-                                        onChange={this.handleOnChange.bind(this)}
-
-                                            fullWidth
-                                        />
-
-                                        <TextField
-
-                                            margin="dense"
-                                            id="editPost"
-
-                                            value={(this.state.editPost)}
-                                        //    label={(this.state.editPost)}
-                                            label={this.state.errorPostMessage}
-
-                                            error={this.state.errorPost}
-                                          //  type="password"
-                                       
-                                            onChange={this.handleOnChange.bind(this)}
-
-                                            fullWidth
-                                        />
-
-
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={this.handleClose} color="primary">
-                                            Cancel
-            </Button>
-                                        <Button onClick={() => { this.editPost() }} color="primary">
-                                            Save
-            </Button>
-                                    </DialogActions>
-
-                                </Dialog>
                                 <h1>{post.title}
                                 </h1>
                                 
@@ -388,9 +343,66 @@ class HomePage extends React.Component {
                         })}
 
                             </Grid>
-
+                          
                         </Grid>
 
+                        <Dialog
+                            fullWidth={true}
+                            maxWidth="xl"
+                            open={this.state.openEdit}
+                            onClose={this.handleClose}
+                         //   aria-labelledby="form-dialog-title"
+                        >
+                            <DialogTitle id="form-dialog-titles">Edit Post?</DialogTitle>
+                            <DialogContent>
+
+                                <TextField
+                                    autoFocus
+                                    margin="normal"
+                                    id="editTitle"
+                                    value={(this.state.editTitle)}
+                                    //    label={(this.state.editTitle)}
+                                    label={this.state.errorTitleMessage}
+                                    error={this.state.errorTitle}
+                                    type="email"
+                                    multiline={true}
+                                    variant ="outlined"
+                                    onChange={this.handleOnChange.bind(this)}
+
+                                    fullWidth
+                                />
+
+                                <TextField
+                                    variant="outlined"
+
+                                    margin="normal"
+                                    id="editPost"
+
+                                    value={(this.state.editPost)}
+                                    //    label={(this.state.editPost)}
+                                    label={this.state.errorPostMessage}
+
+                                    error={this.state.errorPost}
+                                    //  type="password"
+                                   multiline={true}
+
+                                    onChange={this.handleOnChange.bind(this)}
+
+                                    fullWidth
+                                />
+
+
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={this.handleClose} color="primary">
+                                    Cancel
+            </Button>
+                                <Button onClick={() => { this.editPost() }} color="primary">
+                                    Save
+            </Button>
+                            </DialogActions>
+
+                        </Dialog>
                     </div>
 
                     : ''}

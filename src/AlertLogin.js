@@ -38,7 +38,8 @@ class AlertLogin extends React.Component {
         isLogin: false,
         loggedin: 'Login',
         welcomeMessage: '',
-        redirectHome: false
+        redirectHome: false,
+        nameKey: '',
     };
 
     setRedirect = () => {
@@ -124,6 +125,7 @@ class AlertLogin extends React.Component {
     logOut = () => {
         //   this.setRedirect();
         // this.setRedirectHome();
+        Connect.auth().signOut();
         this.props.getAvatar("");
 
         this.handleClose();
@@ -171,7 +173,7 @@ class AlertLogin extends React.Component {
                 errorUsernameMessage: "Username",
                 errorPasswordMessage: "Password"
             });
-
+            this.login();
             alert("Welcome " + tempListOfName[nameKey])
             this.props.getAvatar(tempListOfAvatar[nameKey]);
             this.props.getUserNameNumber(nameKey);
@@ -199,17 +201,34 @@ class AlertLogin extends React.Component {
 
 
     }
-
+    login() {
+        //e.preventDefault();
+        Connect.auth().signInWithEmailAndPassword(this.state.username, this.state.password).then((u) => {
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
 
 
     componentDidMount() {
         {
             this.readUserData()
+            
         }
     }
+    functions = () => {
+        this.setState({ isLogin: true, loggedin: "Logout", nameKey: this.props.namekey });
 
-    component
-
+    }
+    componentDidUpdate() {
+        if (this.props.namekey !== this.state.nameKey) {
+            this.functions();
+            this.props.getAvatar(this.state.listOfAvatars[this.props.namekey]);
+            console.log(this.props.namekey);
+            this.props.getUserNameNumber(this.props.namekey);
+        }
+    }
+   
     render() {
 
         return (
@@ -290,6 +309,7 @@ class AlertLogin extends React.Component {
 
 function mapStateToProps(state) {
     return {
+        namekey: state.namekey,
         avatar: state.avatar,
         usernamenumber: state.usernamenumber
     }

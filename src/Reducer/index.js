@@ -1,7 +1,7 @@
 const initalState = {
     avatar: '',
     usernamenumber:'',
-
+    namekey:'',
 };
 
 const loggedInUser = (state = initalState, action) => {
@@ -12,6 +12,9 @@ const loggedInUser = (state = initalState, action) => {
 
         case 'USERNAMENUMBER':
             return Object.assign({}, state, { usernamenumber: action.content })
+
+        case 'NAMEKEY':
+            return Object.assign({}, state, { namekey: action.content })
         default:
             return state;   
 
