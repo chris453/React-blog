@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Connect from './Config/Database'
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
-import { getNameKey } from './Action/index';
+import { getNameKey, getAvatar } from './Action/index';
 
 import AppBar from './AppBar';
 import styles from './Styles/styles.css';
@@ -32,13 +32,13 @@ class App extends Component {
 
     authListener() {
         Connect.auth().onAuthStateChanged((user) => {
-          // console.log(user.email);
+         
             
             if (user) {
                
                 this.setState({ user });
                 this.setState({testUser:user.email})
-              //  alert(this.state.user);
+             
 
                 this.readUserData();
                 localStorage.setItem('user', user.uid);
@@ -61,7 +61,7 @@ class App extends Component {
                 var tempUsername = item.val().Username;
                 usernameValue.push(tempUsername)
                 this.setState({ listOfUsernames: usernameValue })
-              //  alert(tempUsername);
+             
                
 
                 var name = item.val().First_Name;
@@ -75,7 +75,7 @@ class App extends Component {
             });
 
 
-            return //console.log(this.state.listOfAvatars);
+            return 
 
 
         }
@@ -87,10 +87,7 @@ class App extends Component {
     }
 
     validateCredentials = () => {
-      //  console.log(this.props.nameKey);
-       // alert("hey");
-
-            //  alert("heyasas");
+     
             let result = false;
             let tempListOfUsername = this.state.listOfUsernames
             let tempListOfName = this.state.listOfNames
@@ -99,27 +96,20 @@ class App extends Component {
             let usernameError = false;
         let passwordError = false;
 
-        // console.log(this.state.listOfUsernames);
+   
         for (let i = 0; i < tempListOfUsername.length && !passwordError; i++) {
                 if (this.state.testUser === tempListOfUsername[i]) {
                    nameKey = i;
                    // this.state.namekey = i;
-                   console.log(i);
+     
                     this.props.getNameKey(i);
-                    //alert(this.props.namekey);
+                    this.props.getAvatar(tempListOfAvatar[i]);
                     passwordError = true;
                   //  break;
-                    //  console.log(usernameError)
     
                
             }
-            //  alert((tempListOfAvatar[nameKey]));
-            //alert(nameKey);
-            //alert(tempListOfName[nameKey]);
-            //alert( this.props.getAvatar(tempListOfAvatar[nameKey]));
-            //alert( this.props.getUserNameNumber(nameKey));
-            //alert(this.props.getUser(tempListOfName[nameKey]));
-
+           
             // this.setRedirect();
 
         }
@@ -129,14 +119,14 @@ class App extends Component {
     }
     componentDidUpdate() {
         if (this.state.check) {
-        //    if (this.props.)
+  
             this.validateCredentials();
         }
 
 
     }
-    render() {
-        //console.log(this.state.listOfUsernames);
+    render() {   
+     
         return (
             <div className="App">
                 
@@ -152,7 +142,9 @@ class App extends Component {
 }
 function mapStateToProps(state) {
     return {
-      namekey:state.namekey
+        namekey: state.namekey,
+        avatar: state.avatar
+
     }
 }
-export default connect(mapStateToProps, { getNameKey })(App);
+export default connect(mapStateToProps, { getNameKey, getAvatar })(App);

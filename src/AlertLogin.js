@@ -27,8 +27,8 @@ class AlertLogin extends React.Component {
         password: '',
         listOfUsernames: {},
         listOfPasswords: {},
-        listOfNames: {},
-        listOfAvatars: {},
+        listOfNames: [],
+        listOfAvatars: [],
         errorUsername: false,
         errorPassword: false,
         errorUsernameMessage: "Username",
@@ -113,6 +113,7 @@ class AlertLogin extends React.Component {
 
             });
 
+     //       alert("hey");
 
             return //console.log(this.state.listOfAvatars);
 
@@ -221,11 +222,13 @@ class AlertLogin extends React.Component {
 
     }
     componentDidUpdate() {
-        if (this.props.namekey !== this.state.nameKey) {
+        if (this.props.namekey !== this.state.nameKey && !this.state.listOfAvatars.length) {
+          //  alert("here now");
+
             this.functions();
-            this.props.getAvatar(this.state.listOfAvatars[this.props.namekey]);
-            console.log(this.props.namekey);
-            this.props.getUserNameNumber(this.props.namekey);
+         //   this.props.getAvatar(this.state.listOfAvatars[this.props.namekey]);
+           // console.log(this.state.listOfAvatars[0]);
+           this.props.getUserNameNumber(this.props.namekey);
         }
     }
    

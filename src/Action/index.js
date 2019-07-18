@@ -1,5 +1,5 @@
 export function getAvatar(text) {
-    //console.log(text);
+     //   console.log(text);
     return {
         type: "AVATAR",
         content: text
@@ -8,7 +8,7 @@ export function getAvatar(text) {
 }
 
 export function getUserNameNumber(text) {
-    console.log(text);
+   // console.log(text);
    // alert(text);
         return {
             type: "USERNAMENUMBER",
@@ -18,7 +18,7 @@ export function getUserNameNumber(text) {
     
 }
 export function getNameKey(text) {
-    console.log(text);
+ //   console.log(text);
   //  alert(text);
     return {
         type: "NAMEKEY",

@@ -24,7 +24,7 @@ class AvatarIcon extends React.Component {
             //   <Grid container justify="center" alignItems="center">
 
             <div>
-                <Avatar alt="lanlan icon"
+                <Avatar alt="icon"
                     src="https://firebasestorage.googleapis.com/v0/b/sturdy-plateau-174315.appspot.com/o/default_icon.png?alt=media&token=1e38271f-f758-4d7c-a34e-88d1e4a61689"
                     className="avatar_style" />
 

@@ -164,9 +164,9 @@ class HomePage extends React.Component {
 
 }
     componentDidUpdate() {
-        if (this.props.avatar !== this.state.prevAvatar) {
+        if (this.props.usernamenumber !== this.state.prevAvatar) {
             this.readUserData()
-            this.setState({ prevAvatar: this.props.avatar })
+            this.setState({ prevAvatar: this.props.usernamenumber })
 
         }
     }
@@ -220,8 +220,9 @@ class HomePage extends React.Component {
     }
     render() {
 
-       // console.log(this.listOfKeys);
-        
+        // console.log(this.listOfKeys);
+      //  console.log(this.props.avatar);
+      //  console.log(this.props.usernamenumber);
         return (
             <div className="container">
                 {this.props.avatar !== '' ?
