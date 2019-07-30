@@ -1,5 +1,5 @@
 export function getAvatar(text) {
-     //   console.log(text);
+        console.log(text);
     return {
         type: "AVATAR",
         content: text

@@ -15,33 +15,69 @@ import Lock from '@material-ui/icons/Lock'
 import { database } from 'firebase';
 import HomePage from './HomePage'
 import { Redirect } from 'react-router-dom'
-import { getAvatar, getUserNameNumber } from './Action/index';
+import { getAvatar, getUserNameNumber, getNameKey } from './Action/index';
 import { connect } from 'react-redux';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 class AlertLogin extends React.Component {
-    state = {
-        open: false,
-        username: '',
-        password: '',
-        listOfUsernames: {},
-        listOfPasswords: {},
-        listOfNames: [],
-        listOfAvatars: [],
-        errorUsername: false,
-        errorPassword: false,
-        errorUsernameMessage: "Username",
-        errorPasswordMessage: "Password",
+    constructor() {
+        super();
 
-        redirect: false,
-        isLogin: false,
-        loggedin: 'Login',
-        welcomeMessage: '',
-        redirectHome: false,
-        nameKey: '',
-    };
+        this.state = {
+            open: false,
+            username: '',
+            password: '',
+            listOfUsernames: [],
+            listOfPasswords: {},
+            listOfNames: [],
+            listOfAvatars: [],
+            errorUsername: false,
+            errorPassword: false,
+            errorUsernameMessage: "Username",
+            errorPasswordMessage: "Password",
 
+            redirect: false,
+            isLogin: false,
+            loggedin: 'Login',
+            welcomeMessage: '',
+            redirectHome: false,
+            nameKey: '',
+            testUser: '',
+            authCheck: false,
+        };
+        this.authListener = this.authListener.bind(this);
+    }
+    authListener() {
+        Connect.auth().onAuthStateChanged((user) => {
+
+
+            if (user) {
+                this.handleClose();
+//                this.setState({ isLogin: true, loggedin: "Logout", username: '', password: '', welcomeMessage: "Welcome " });
+
+                this.setState({ testUser: user.email })
+
+                this.setState({ user });
+            
+
+                if (this.props.avatar === "") {
+                    this.readUserDatas(user.email);
+                }
+                localStorage.setItem('user', user.uid);
+
+            } else {
+                this.setState({ authCheck: false, testUser:"" });
+            
+                this.readUserData()
+
+                this.props.getAvatar("");
+                this.props.getUserNameNumber("");
+                this.setState({ user: null });
+                localStorage.removeItem('user');
+            }
+        });
+    }
     setRedirect = () => {
         this.setState({
             redirect: true
@@ -95,9 +131,7 @@ class AlertLogin extends React.Component {
         var avatarTempList = [];
         Connect.database().ref('UserAccounts').once('value', (snapshot) => {
             snapshot.forEach(item => {
-                var tempUsername = item.val().Username;
-                usernameValue.push(tempUsername)
-                this.setState({ listOfUsernames: usernameValue })
+              
 
                 var passCode = item.val().Password;
                 passwordTempList.push(passCode)
@@ -110,10 +144,12 @@ class AlertLogin extends React.Component {
                 var avatar = item.val().Avatar;
                 avatarTempList.push(avatar)
                 this.setState({ listOfAvatars: avatarTempList })
+                var tempUsername = item.val().Username;
+                usernameValue.push(tempUsername)
+                this.setState({ listOfUsernames: usernameValue })
 
             });
 
-     //       alert("hey");
 
             return //console.log(this.state.listOfAvatars);
 
@@ -128,7 +164,7 @@ class AlertLogin extends React.Component {
         // this.setRedirectHome();
         Connect.auth().signOut();
         this.props.getAvatar("");
-
+        this.props.getUserNameNumber("");
         this.handleClose();
 
 
@@ -175,10 +211,9 @@ class AlertLogin extends React.Component {
                 errorPasswordMessage: "Password"
             });
             this.login();
-            alert("Welcome " + tempListOfName[nameKey])
             this.props.getAvatar(tempListOfAvatar[nameKey]);
             this.props.getUserNameNumber(nameKey);
-            this.setState({ isLogin: true, loggedin: "Logout", username: '', password: '', welcomeMessage: "Welcome " + tempListOfName[nameKey] + ' ' });
+            this.setState({ isLogin: true, loggedin: "Logout", username: '', password: '', welcomeMessage: "Welcome " + tempListOfName[nameKey] });
 
             // this.setRedirect();
             this.handleClose();
@@ -197,10 +232,75 @@ class AlertLogin extends React.Component {
             } else this.setState({ errorPasswordMessage: "Password" })
 
 
-            //  console.log(this.state.errorPassword + this.state.errorUsername)
         } // chris453@hotmail.com
 
 
+    }
+
+    readUserDatas = (username) => {
+        let array = {}
+        var usernameValue = [];
+        var passwordTempList = [];
+        var nameTempList = [];
+        var avatarTempList = [];
+        Connect.database().ref('UserAccounts').once('value', (snapshot) => {
+            snapshot.forEach(item => {
+                var avatar = item.val().Avatar;
+                avatarTempList.push(avatar)
+                this.setState({ listOfAvatars: avatarTempList })
+
+               
+
+                var name = item.val().First_Name;
+                nameTempList.push(name)
+                this.setState({ listOfNames: nameTempList })
+
+                var tempUsername = item.val().Username;
+                usernameValue.push(tempUsername)
+                this.setState({ listOfUsernames: usernameValue })
+
+
+            });
+
+
+
+
+        }
+
+        );
+        this.state.authCheck = true;
+
+    }
+    validateCredentialss = (testuser) => {
+
+        let result = false;
+        let tempListOfUsername = this.state.listOfUsernames
+        let tempListOfName = this.state.listOfNames
+        let tempListOfAvatar = this.state.listOfAvatars
+        let nameKey;
+        let usernameError = false;
+        let passwordError = false;
+
+     //   console.log(this.state.testUser + " hey heresss" + tempListOfUsername);
+        for (let i = 0; i < tempListOfUsername.length && !passwordError; i++) {
+
+            if (this.state.testUser === tempListOfUsername[i]) {
+                nameKey = i;
+                 this.state.namekey = i;
+                this.setState({ isLogin: true, loggedin: "Logout", username: '', password: '', welcomeMessage: "Welcome " + tempListOfName[nameKey] });
+
+                this.props.getNameKey(i);
+                this.props.getAvatar(tempListOfAvatar[i]);
+                this.props.getUserNameNumber(i);
+                this.setState({ authCheck: false });
+                passwordError = true;
+                //  break;
+
+            }
+
+            // this.setRedirect();
+
+        }
     }
     login() {
         //e.preventDefault();
@@ -213,100 +313,98 @@ class AlertLogin extends React.Component {
 
     componentDidMount() {
         {
-            this.readUserData()
-            
+            this.authListener();
         }
     }
     functions = () => {
-        this.setState({ isLogin: true, loggedin: "Logout", nameKey: this.props.namekey });
+        this.setState({ isLogin: true, loggedin: "Logout", nameKey: this.state.listOfNames[this.state.nameKey] });
 
     }
     componentDidUpdate() {
-        if (this.props.namekey !== this.state.nameKey && !this.state.listOfAvatars.length) {
-          //  alert("here now");
-
-            this.functions();
+        if (this.state.authCheck) {
+            this.validateCredentialss(this.state.email);
          //   this.props.getAvatar(this.state.listOfAvatars[this.props.namekey]);
            // console.log(this.state.listOfAvatars[0]);
-           this.props.getUserNameNumber(this.props.namekey);
+          // this.props.getUserNameNumber(this.props.namekey);
         }
     }
    
     render() {
+        if (!this.state.authCheck) {
+            return (
+                <div>
+                    {this.state.welcomeMessage}
+                    <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
+                        {this.state.loggedin}
+                    </Button>
+                    <Dialog
+                        open={this.state.open}
+                        onClose={this.handleClose}
+                        aria-labelledby="form-dialog-title"
+                    >
+                        <DialogTitle id="form-dialog-title">Login</DialogTitle>
+                        <DialogContent>
 
-        return (
-            <div>
-                {this.state.welcomeMessage}
-                <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
-                    {this.state.loggedin}
-                </Button>
-                <Dialog
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                    aria-labelledby="form-dialog-title"
-                >
-                    <DialogTitle id="form-dialog-title">Login</DialogTitle>
-                    <DialogContent>
-
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="username"
-                            label={this.state.errorUsernameMessage}
-
-
-                            type="email"
-                            error={this.state.errorUsername}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdorment position="start">
-                                        <AccountCircle />
-                                    </InputAdorment>
-                                )
-                            }}
-                            onChange={this.handleOnChange.bind(this)}
-
-                            fullWidth
-                        />
-
-                        <TextField
-
-                            margin="dense"
-                            id="password"
-                          
-                            label={this.state.errorPasswordMessage}
-                            error={this.state.errorPassword}
-                            type="password"
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdorment position="start">
-                                        <Lock />
-                                    </InputAdorment>
-                                    
-                                )
-                            }}
-                            onChange={this.handleOnChange.bind(this)}
-
-                            fullWidth
-                        />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="username"
+                                label={this.state.errorUsernameMessage}
 
 
-                    </DialogContent>
-                    <CreateUser />
+                                type="email"
+                                error={this.state.errorUsername}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdorment position="start">
+                                            <AccountCircle />
+                                        </InputAdorment>
+                                    )
+                                }}
+                                onChange={this.handleOnChange.bind(this)}
 
-                    <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
-                            Cancel
+                                fullWidth
+                            />
+
+                            <TextField
+
+                                margin="dense"
+                                id="password"
+
+                                label={this.state.errorPasswordMessage}
+                                error={this.state.errorPassword}
+                                type="password"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdorment position="start">
+                                            <Lock />
+                                        </InputAdorment>
+
+                                    )
+                                }}
+                                onChange={this.handleOnChange.bind(this)}
+
+                                fullWidth
+                            />
+
+
+                        </DialogContent>
+                        <CreateUser />
+
+                        <DialogActions>
+                            <Button onClick={this.handleClose} color="primary">
+                                Cancel
             </Button>
-                        <Button onClick={() => this.validateCredentials(this.state.username, this.state.password)} color="primary">
-                            Confirm
+                            <Button onClick={() => this.validateCredentials(this.state.username, this.state.password)} color="primary">
+                                Confirm
             </Button>
-                        {this.renderRedirect()}
+                            {this.renderRedirect()}
 
-                    </DialogActions>
-                </Dialog>
-            </div>
-        );
+                        </DialogActions>
+                    </Dialog>
+                </div>
+            );
+        }else return ""
     }
 }
 
@@ -318,4 +416,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, { getAvatar, getUserNameNumber })(AlertLogin);
+export default connect(mapStateToProps, { getAvatar, getUserNameNumber, getNameKey })(AlertLogin);

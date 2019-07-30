@@ -50,7 +50,7 @@ class HomePage extends React.Component {
             errorTitleMessage: "Title",
             errorPostMessage: "Post",
             listOfKeys: [],
-            prevAvatar: '',
+            prevUserNameNumber: '',
             open: false,
             openEdit: false,
             buttonPressed: '0',
@@ -114,7 +114,6 @@ class HomePage extends React.Component {
 
             let ref = Connect.database().ref('Entries/' + this.props.usernamenumber)
             let time = new Date().toLocaleString();
-
             let entry = {
                 title: this.state.title,
                 post: this.state.post,
@@ -164,9 +163,9 @@ class HomePage extends React.Component {
 
 }
     componentDidUpdate() {
-        if (this.props.usernamenumber !== this.state.prevAvatar) {
+        if (this.props.usernamenumber !== this.state.prevUserNameNumber) {
             this.readUserData()
-            this.setState({ prevAvatar: this.props.usernamenumber })
+            this.setState({ prevUserNameNumber: this.props.usernamenumber })
 
         }
     }
@@ -210,7 +209,7 @@ class HomePage extends React.Component {
     delete = (id) => {
         alert(id);
         this.handleClickOpen();
-        alert(this.state.open);
+       // alert(this.state.open);
         return (
             <div>
         
@@ -225,7 +224,7 @@ class HomePage extends React.Component {
       //  console.log(this.props.usernamenumber);
         return (
             <div className="container">
-                {this.props.avatar !== '' ?
+                {this.props.usernamenumber !== '' ?
 
                     <div>
                         <br />

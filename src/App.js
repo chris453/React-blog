@@ -27,7 +27,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.authListener();
+        //this.authListener();
     }
 
     authListener() {
@@ -101,10 +101,10 @@ class App extends Component {
                 if (this.state.testUser === tempListOfUsername[i]) {
                    nameKey = i;
                    // this.state.namekey = i;
-     
+            //        alert("hey");
                     this.props.getNameKey(i);
                     this.props.getAvatar(tempListOfAvatar[i]);
-                    passwordError = true;
+                  //  passwordError = true;
                   //  break;
     
                
