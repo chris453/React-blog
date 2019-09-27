@@ -29,3 +29,8 @@ margin-right: 10px;
     float: right;
     margin-right: 15px;
 }
+
+.create_avatar_style {
+    float: left;
+    margin-left: 15px;
+}

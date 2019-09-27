@@ -3,7 +3,10 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import ChangeAvatar from './ChangeAvatar'
 
 
 class AvatarIcon extends React.Component {
@@ -15,12 +18,38 @@ class AvatarIcon extends React.Component {
         if (this.props.avatar !== "") {
 
             return (
+              /*  <PopupState variant="popover" popupId="demo-popup-menu">
+                    {popupState => (
+                        <React.Fragment>
+                      
+                            <div>
+                                <Dropdown.Toggle split variant="success" id="dropdown-split-basic" 
+
+                                    {...bindTrigger(popupState)}
+                                    
+
+                                />
+                            </div>
+                            <Menu {...bindMenu(popupState)}>
+                                <MenuItem onClick={<ChangeAvatar/> }>Change Avatar</MenuItem>
+                            </Menu>
+                        </React.Fragment>
+                    )}
+                </PopupState>
+                */
+  
+                //   <Grid container justify="center" alignItems="center">
                 <div>
-                    <Avatar alt="lanlan icon"
-                        src={this.props.avatar}
+                    <Avatar alt="icon"
+                        src= {this.props.avatar}
                         className="avatar_style" />
+
+
                 </div>
+
+            
             )
+        
         } else {
            // alert("hey");
             return (
@@ -33,7 +62,7 @@ class AvatarIcon extends React.Component {
 
                 </div>
 
-            );
+            )
         }
     }
 

@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import FormDialog from './AlertLogin';
 import HomePage from './HomePage';
 import AvatarIcon from './AvatarIcon';
+import ChangeAvatar from './ChangeAvatar';
 
 
 const styles = {
@@ -39,7 +40,7 @@ function ButtonAppBar(props) {
                     <Typography variant="h6" color="inherit" className={classes.grow}>
                         Learning React
           </Typography>
-                    <AvatarIcon />
+                    <AvatarIcon onClick={<FormDialog />} />
                     <FormDialog />
 
 

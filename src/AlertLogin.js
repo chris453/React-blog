@@ -12,6 +12,7 @@ import Connect from './Config/Database'
 import InputAdorment from '@material-ui/core/InputAdornment'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Lock from '@material-ui/icons/Lock'
+
 import { database } from 'firebase';
 import HomePage from './HomePage'
 import { Redirect } from 'react-router-dom'
@@ -213,7 +214,7 @@ class AlertLogin extends React.Component {
             this.login();
             this.props.getAvatar(tempListOfAvatar[nameKey]);
             this.props.getUserNameNumber(nameKey);
-            this.setState({ isLogin: true, loggedin: "Logout", username: '', password: '', welcomeMessage: "Welcome " + tempListOfName[nameKey] });
+            this.setState({ isLogin: true, loggedin: "Logout", username: '', password: '', welcomeMessage: "Welcome " + tempListOfName[nameKey] + " " });
 
             // this.setRedirect();
             this.handleClose();
@@ -287,13 +288,14 @@ class AlertLogin extends React.Component {
             if (this.state.testUser === tempListOfUsername[i]) {
                 nameKey = i;
                  this.state.namekey = i;
-                this.setState({ isLogin: true, loggedin: "Logout", username: '', password: '', welcomeMessage: "Welcome " + tempListOfName[nameKey] });
+                this.setState({ isLogin: true, loggedin: "Logout", username: '', password: '', welcomeMessage: "Welcome " + tempListOfName[nameKey] + " " });
 
                 this.props.getNameKey(i);
                 this.props.getAvatar(tempListOfAvatar[i]);
                 this.props.getUserNameNumber(i);
-                this.setState({ authCheck: false });
                 passwordError = true;
+                this.setState({ authCheck: false });
+
                 //  break;
 
             }
@@ -326,6 +328,7 @@ class AlertLogin extends React.Component {
          //   this.props.getAvatar(this.state.listOfAvatars[this.props.namekey]);
            // console.log(this.state.listOfAvatars[0]);
           // this.props.getUserNameNumber(this.props.namekey);
+
         }
     }
    
@@ -334,7 +337,7 @@ class AlertLogin extends React.Component {
             return (
                 <div>
                     {this.state.welcomeMessage}
-                    <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
+                    <Button variant="contained" color="secondary" onClick={this.handleClickOpen}>
                         {this.state.loggedin}
                     </Button>
                     <Dialog

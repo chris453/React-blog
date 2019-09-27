@@ -76,13 +76,22 @@ export default class FormDialog extends React.Component {
             this.setState({ errorPassword: true, errorPasswordMessage: "Invalid Password" })
 
         } else {
-            password = true;
-            this.setState({ errorPassword: false, errorPasswordMessage: "Password" })
+            if (this.state.password.length >= 6) {
+                password = true;
+                this.setState({ errorPassword: false, errorPasswordMessage: "Password" })
+            }
+            else {
+                this.setState({ errorPassword: true, errorPasswordMessage: "Password has to be greater or equal to 6 characters" })
+                password = false;
 
+            }
         }
 
         if (password && email && first && last) {
-
+            password = false;
+            email = false;
+            first = false;
+            last = false;
            this.signup(e) 
                 
 
@@ -96,6 +105,7 @@ export default class FormDialog extends React.Component {
         }).then((u) => {
             console.log(u)
             let ref = Connect.database().ref('UserAccounts/')
+            this.setState({ errorEmail: false, errorEmailMessage: "Email Address" });
 
             let entry = {
                 Avatar: "https://firebasestorage.googleapis.com/v0/b/sturdy-plateau-174315.appspot.com/o/default_icon.png?alt=media&token=1e38271f-f758-4d7c-a34e-88d1e4a61689",
@@ -107,7 +117,8 @@ export default class FormDialog extends React.Component {
             ref.push(entry);
         })
             .catch((error) => {
-
+                
+                this.setState({ errorEmail: true, errorEmailMessage: error.message });
                 console.log(error);
             })
     }
@@ -141,7 +152,8 @@ export default class FormDialog extends React.Component {
                 >
                     <DialogTitle id="form-dialog-title">Create New User</DialogTitle>
                     <DialogContent>
-                        <Avatar alt="icon"
+                        <Avatar alt="icon" 
+                            className="create_avatar_style"
                             src={"https://firebasestorage.googleapis.com/v0/b/sturdy-plateau-174315.appspot.com/o/default_icon.png?alt=media&token=1e38271f-f758-4d7c-a34e-88d1e4a61689"}
 
                             />
