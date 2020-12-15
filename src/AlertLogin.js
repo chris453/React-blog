@@ -13,7 +13,6 @@ import InputAdorment from '@material-ui/core/InputAdornment'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Lock from '@material-ui/icons/Lock'
 
-import { database } from 'firebase';
 import HomePage from './HomePage'
 import { Redirect } from 'react-router-dom'
 import { getAvatar, getUserNameNumber, getNameKey } from './Action/index';
